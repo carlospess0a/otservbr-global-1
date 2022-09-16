@@ -53,12 +53,13 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	local killerLink = string.gsub(killerName, "%s+", "+")
 	local playerLink = string.gsub(playerName, "%s+", "+")
 	local serverURL = getConfigInfo("url")
-	if killer:isPlayer() then
+	if killer and killer:isPlayer() then
 		Webhook.send(playerName.." just got killed!", "**["..playerName.."]("..serverURL.."/?characters/"..playerLink..")** got killed at level " ..playerLevel.. " by **["..killerName.."]("..serverURL.."/?characters/"..killerLink..")**", WEBHOOK_COLOR_OFFLINE, announcementChannels["player-kills"])
 	else
 		Webhook.send(playerName.." has just died!", "**["..playerName.."]("..serverURL.."/?characters/"..playerLink..")** died at level " ..playerLevel.. " by " ..killerName, WEBHOOK_COLOR_WARNING, announcementChannels["player-kills"])
 	end
 	-- End Webhook Player Death
+
 
 	local deathRecords = 0
 	local tmpResultId = resultId
@@ -69,6 +70,10 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 
 	if resultId ~= false then
 		result.free(resultId)
+	end
+
+	if not killer then
+		return
 	end
 
 	if byPlayer == 1 then
